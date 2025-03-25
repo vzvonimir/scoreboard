@@ -2,6 +2,7 @@ package com.scoreboard;
 
 import org.junit.jupiter.api.Test;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -63,4 +64,40 @@ public class ScoreBoardTest {
             scoreBoard.startMatch("Spain", "Brazil");
         });
     }
+
+    @Test
+    void updateScore_shouldUpdateScoreOfExistingMatch(){
+        ScoreBoard scoreBoard = new ScoreBoard();
+        Match match = scoreBoard.startMatch("Spain", "Brazil");
+
+        scoreBoard.updateScore(match.getMatchId(), 2, 1);
+
+        assertEquals(2, match.getHomeScore());
+        assertEquals(1, match.getAwayScore());
+    }
+
+    @Test
+    void updateScore_shouldThrowIfMatchNotFound(){
+        ScoreBoard scoreBoard = new ScoreBoard();
+        UUID fakeId = UUID.randomUUID();
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scoreBoard.updateScore(fakeId, 2, 2);
+        });
+    }
+
+    @Test
+    void updateScore_shouldThrowIfScoresAreNegative(){
+        ScoreBoard scoreBoard = new ScoreBoard();
+        Match match = scoreBoard.startMatch("Spain", "Brazil");
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scoreBoard.updateScore(match.getMatchId(), -1, 3);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scoreBoard.updateScore(match.getMatchId(), 2, -2);
+        });
+    }
+
 }

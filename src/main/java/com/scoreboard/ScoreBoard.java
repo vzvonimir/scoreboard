@@ -2,11 +2,12 @@ package com.scoreboard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ScoreBoard {
     private final List<Match> matches = new ArrayList<>();
 
-    public void startMatch(String homeTeam, String awayTeam){
+    public Match startMatch(String homeTeam, String awayTeam){
         if(homeTeam == null || awayTeam == null || homeTeam.isBlank() || awayTeam.isBlank()){
             throw new IllegalArgumentException("Team names can't be null or empty!");
         }
@@ -17,7 +18,18 @@ public class ScoreBoard {
             throw new IllegalArgumentException("This match is already in progress!");
         }
 
-        matches.add(new Match(homeTeam, awayTeam));
+        Match match = new Match(homeTeam, awayTeam);
+        matches.add(match);
+        return match;
+    }
+
+    public void updateScore(UUID matchId, int homeScore, int awayScore){
+        if(homeScore < 0 || awayScore < 0){
+            throw new IllegalArgumentException("Scores can't be negative!");
+        }
+
+        Match match = findMatchById(matchId);
+        match.setScore(homeScore, awayScore);
     }
 
     public List<Match> getMatches(){
@@ -31,6 +43,15 @@ public class ScoreBoard {
             }
         }
         return false;
+    }
+
+    private Match findMatchById(UUID matchId){
+        for(Match match : matches){
+            if(match.getMatchId().equals(matchId)){
+                return match;
+            }
+        }
+        throw new IllegalArgumentException("Match not found!");
     }
 
 }
