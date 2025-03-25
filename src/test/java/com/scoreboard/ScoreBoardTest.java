@@ -100,4 +100,24 @@ public class ScoreBoardTest {
         });
     }
 
+    @Test
+    void finishMatch_shouldRemoveMatchFromScoreboard(){
+        ScoreBoard scoreBoard = new ScoreBoard();
+        Match match = scoreBoard.startMatch("Croatia", "Italy");
+
+        scoreBoard.finishMatch(match.getMatchId());
+
+        List<Match> matches = scoreBoard.getMatches();
+        assertTrue(matches.isEmpty());
+    }
+
+    @Test
+    void finishMatch_shouldThrowIfMatchNotFound(){
+        ScoreBoard scoreBoard = new ScoreBoard();
+        UUID fakeId = UUID.randomUUID();
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scoreBoard.finishMatch(fakeId);
+        });
+    }
 }

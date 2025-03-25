@@ -36,6 +36,11 @@ public class ScoreBoard {
         return matches;
     }
 
+    public void finishMatch(UUID matchId) {
+        Match match = findMatchById(matchId);
+        matches.remove(match);
+    }
+
     private boolean matchAlreadyExists(String homeTeam, String awayTeam){
         for(Match match : matches){
             if(match.getHomeTeam().equalsIgnoreCase(homeTeam) && match.getAwayTeam().equalsIgnoreCase(awayTeam)){
@@ -53,5 +58,4 @@ public class ScoreBoard {
         }
         throw new IllegalArgumentException("Match not found!");
     }
-
 }
