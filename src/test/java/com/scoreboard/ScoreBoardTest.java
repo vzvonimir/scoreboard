@@ -120,4 +120,38 @@ public class ScoreBoardTest {
             scoreBoard.finishMatch(fakeId);
         });
     }
+
+    @Test
+    void getSummary_shouldReturnMatchesInCorrectOrder(){
+        ScoreBoard scoreBoard = new ScoreBoard();
+
+        //Starts matches in this order
+        Match match1 = scoreBoard.startMatch("Mexico", "Canada");
+        Match match2 = scoreBoard.startMatch("Spain", "Brazil");
+        Match match3 = scoreBoard.startMatch("Germany", "France");
+        Match match4 = scoreBoard.startMatch("Uruguay", "Italy");
+        Match match5 = scoreBoard.startMatch("Argentina", "Australia");
+
+        //Update scores
+        scoreBoard.updateScore(match1.getMatchId(), 0, 5);
+        scoreBoard.updateScore(match2.getMatchId(), 10, 2);
+        scoreBoard.updateScore(match3.getMatchId(), 2, 2);
+        scoreBoard.updateScore(match4.getMatchId(), 6, 6);
+        scoreBoard.updateScore(match5.getMatchId(), 3, 1);
+
+        List<Match> summary = scoreBoard.getSummary();
+
+        // Expected order:
+        // 1. Uruguay 6 - Italy 6
+        // 2. Spain 10 - Brazil 2
+        // 3. Mexico 0 - Canada 5
+        // 4. Argentina 3 - Australia 1
+        // 5. Germany 2 - France 2
+
+        assertEquals(match4.getMatchId(), summary.get(0).getMatchId()); // Uruguay vs Italy
+        assertEquals(match2.getMatchId(), summary.get(1).getMatchId()); // Spain vs Brazil
+        assertEquals(match1.getMatchId(), summary.get(2).getMatchId()); // Mexico vs Canada
+        assertEquals(match5.getMatchId(), summary.get(3).getMatchId()); // Argentina vs Australia
+        assertEquals(match3.getMatchId(), summary.get(4).getMatchId()); // Germany vs France
+    }
 }

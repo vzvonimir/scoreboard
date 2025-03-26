@@ -41,6 +41,22 @@ public class ScoreBoard {
         matches.remove(match);
     }
 
+    public List<Match> getSummary() {
+        List<Match> summary = new ArrayList<>(matches);
+        summary.sort((match1, match2) -> {
+            int totalScore1 = match1.getHomeScore() + match1.getAwayScore();
+            int totalScore2 = match2.getHomeScore() + match2.getAwayScore();
+
+            if(totalScore1 != totalScore2){
+                return Integer.compare(totalScore2, totalScore1); // higher total score first
+            }else{
+                return Integer.compare(matches.indexOf(match2), matches.indexOf(match1)); // newer match first
+            }
+        });
+
+        return summary;
+    }
+
     private boolean matchAlreadyExists(String homeTeam, String awayTeam){
         for(Match match : matches){
             if(match.getHomeTeam().equalsIgnoreCase(homeTeam) && match.getAwayTeam().equalsIgnoreCase(awayTeam)){
